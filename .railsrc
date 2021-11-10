@@ -1,6 +1,2 @@
+--api
 --database=postgresql
---skip-action-cable
---skip-spring
---skip-coffee
---skip-turbolinks
---template=~/dotfiles/rails_template.rb

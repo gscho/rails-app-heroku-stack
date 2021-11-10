@@ -1,24 +1,31 @@
-name: "Setup Rails API"
+name: "Create a new Rails API"
 
 on:
   workflow_dispatch:
     inputs:
-      APP_NAME:
+      RUBY_VERSION:
         required: true
-        description: "lol"
+      RAILS_VERSION:
+        required: true
 
 jobs:
   stack-initialization:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      
+      - name: checkout stack template
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - name: use ruby 3.0.2 
+      
+      - name: setup ruby ${{ inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.2
+          ruby-version: ${{ inputs.RUBY_VERSION }}
           bundler-cache: true
-      - run: "rails new ./${{ inputs.APP_NAME }}"
-      - run: "ls -la"
+      
+      - name: rails new
+        run: |
+          gem install rails --version ${{ inputs.RAILS_VERSION }} --no-document
+          rails new . --rc=./.railsrc
+          ls -la

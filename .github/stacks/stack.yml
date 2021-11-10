@@ -4,59 +4,34 @@ branding:
   icon: 'cloud'
   color: 'red'
 
-#-------------------------------------------------------------
-# All values needed to be provided/verified by the user should be defined as inputs.
-# Values can be provided using a values file (yaml/json/.env format) or from the UX.
-# Default values are defined by stack authors using **default: <Value>**
-# All inputs defined here are optional unless they are marked **required: true**
-# All inputs will be of String type by default unless specified as **type:boolean**
-# All inputs will be considered as non-secrets unless specified as **is_secret:true**
-# All inputs will be available for scripts/workflows run as part of stack init
-# Any input that is not explicitly configured as Repo/Environment secret will NOT be available in the new stack
 inputs:
-  # - name: Reviewer_Count
-  #   default: 2
-  #   description: Number of required reviewers for PR
-  #   validvalues: 
-  #   - 2
-  #   - 3
-  #   - 4
-  #   - 5
-  #   - 6
+  - name: RUBY_VERSION
+    default: 3.0.2
+    description: The version of ruby to use
 
-  # - name: DEV_SPN_ID
-  #   description: SPN ID for Dev deployments
-  #   is-secret: true
+  - name: RAILS_VERSION
+    default: 6.1.4.1
+    description: The version of rails to use
 
-  # - name: STAGING_SPN_ID
-  #   description: SPN ID for STAGING deployments
-  #   is-secret: true
+  - name: HEROKU_EMAIL
+    description: Heroku email
+    is-secret: true
 
-  # - name: PROD_SPN_ID
-  #   description: SPN ID for Prod deployments
-  #   is-secret: true
+  - name: HEROKU_API_KEY
+    description: Heroku api key
+    is-secret: true
 
-  # - name: MYSQL_Connection_String
-  #   description: DB credentials
-  #   is-secret: true
-
-  # - name: ProductionEnvReviewer
-  #   description: GitHub handle of the production environment reviewer
-
-  # - name: Enable_Vulnerability_Alerts
-  #   description: Enable Vulnerability Alerts
-  #   type: boolean
-
-  - name: APP_NAME
-    description: this would be consumed by init script
-    required: true
-
-#-------------------------------------------------------------
 configs:
-  # repo-metadata:
-  #   parameters:
-  #     topics:
-  #     - rails
+  repo-metadata:
+    parameters:
+      secrets: 
+      - name: HEROKU_EMAIL
+        value: ${{inputs.HEROKU_EMAIL}}
+      - name: HEROKU_API_KEY
+        value: ${{inputs.HEROKU_API_KEY}}
+      description: "changeme"
+      topics:
+      - rails
       
   branches:
     - name: main
