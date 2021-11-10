@@ -1,8 +1,8 @@
 name: rails-api-fargate-stack
 description: This is a stack for deploying a Rails API + postgres DB to AWS
 branding:
-  # icon: 'Azure.svg'
-  color: 'blue'
+  icon: 'cloud'
+  color: 'red'
 
 #-------------------------------------------------------------
 # All values needed to be provided/verified by the user should be defined as inputs.
