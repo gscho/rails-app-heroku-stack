@@ -53,10 +53,10 @@ inputs:
 
 #-------------------------------------------------------------
 configs:
-  repo-metadata:
-    parameters:
-      topics:
-      - rails
+  # repo-metadata:
+  #   parameters:
+  #     topics:
+  #     - rails
       
   branches:
     - name: main
