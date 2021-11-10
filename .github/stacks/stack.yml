@@ -57,7 +57,6 @@ configs:
     parameters:
       topics:
       - rails
-      - postgres
       
   branches:
     - name: main
