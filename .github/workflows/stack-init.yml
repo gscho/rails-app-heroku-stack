@@ -5,6 +5,7 @@ on:
     inputs:
       RUBY_VERSION:
         required: true
+      
       RAILS_VERSION:
         required: true
 
@@ -18,14 +19,14 @@ jobs:
         with:
           persist-credentials: false
       
-      - name: setup ruby ${{ inputs.RUBY_VERSION }} 
+      - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ inputs.RUBY_VERSION }}
+          ruby-version: ${{ github.event.inputs.RUBY_VERSION }}
           bundler-cache: true
       
       - name: rails new
         run: |
-          gem install rails --version ${{ inputs.RAILS_VERSION }} --no-document
+          gem install rails --version ${{ github.event.inputs.RAILS_VERSION }} --no-document
           rails new . --rc=./.railsrc
           ls -la
