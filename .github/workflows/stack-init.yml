@@ -1,0 +1,24 @@
+name: "Setup Rails API"
+
+on:
+  workflow_dispatch:
+    inputs:
+      APP_NAME:
+        required: true
+        description: "lol"
+
+jobs:
+  stack-initialization:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: use ruby 3.0.2 
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.2
+          bundler-cache: true
+      - run: "rails new ./${{ inputs.APP_NAME }}"
+      - run: "ls -la"
