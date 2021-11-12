@@ -5,7 +5,7 @@ on:
     branches: 
     - main
   push:
-    branches: 
+    branches:
     - main
 
 jobs:
@@ -24,14 +24,15 @@ jobs:
         ports:
           - 5432:5432
     steps:
+      
     - name: checkout
       uses: actions/checkout@v2
     
     - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ github.event.inputs.RUBY_VERSION }}
-          bundler-cache: true
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ github.event.inputs.RUBY_VERSION }}
+        bundler-cache: true
 
     - name: rake
       env:

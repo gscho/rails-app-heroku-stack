@@ -27,7 +27,8 @@ jobs:
       - name: generate a new rails project
         run: |
           gem install rails --version ${{ github.event.inputs.RAILS_VERSION }} --no-document
-          rails new . --rc=./.github/stacks/.railsrc
+          rails new . --rc=.railsrc
+          rm -f .railsrc
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v3
