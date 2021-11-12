@@ -28,7 +28,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     
-    - name: setup ruby 3.0.2 
+    - name: setup ruby 3.0.2
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.0.2

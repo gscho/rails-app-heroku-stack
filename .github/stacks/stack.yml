@@ -22,6 +22,10 @@ inputs:
     description: Heroku api key
     is-secret: true
 
+  - name: TEST_BOOL
+    description: a test boolean input
+    type: boolean
+
 configs:
   repo-metadata:
     parameters:

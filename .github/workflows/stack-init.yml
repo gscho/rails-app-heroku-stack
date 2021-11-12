@@ -7,11 +7,16 @@ on:
         required: true
       RAILS_VERSION:
         required: true
+      TEST_BOOL:
+        required: true
 
 jobs:
   rails-new:
     runs-on: ubuntu-latest
     steps:
+
+      - name: echo the bool
+        run: echo ${{ github.event.inputs.TEST_BOOL }}
       
       - name: checkout stack template
         uses: actions/checkout@v2
