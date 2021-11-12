@@ -1,16 +1,15 @@
-name: "Create a new Rails API"
+name: "Generate a new Rails API"
 
 on:
   workflow_dispatch:
     inputs:
       RUBY_VERSION:
         required: true
-      
       RAILS_VERSION:
         required: true
 
 jobs:
-  stack-initialization:
+  rails-new:
     runs-on: ubuntu-latest
     steps:
       
@@ -28,7 +27,7 @@ jobs:
       - name: generate a new rails project
         run: |
           gem install rails --version ${{ github.event.inputs.RAILS_VERSION }} --no-document
-          rails new . --rc=./.railsrc
+          rails new . --rc=./.github/stacks/.railsrc
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v3

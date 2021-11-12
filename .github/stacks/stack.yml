@@ -1,5 +1,6 @@
 name: rails-api-heroku-stack
-description: This is a stack for deploying a Rails API to Heroku
+description: |
+  This stack will generate a Rails API and setup a workflow to deploy it to Heroku
 branding:
   icon: 'cloud'
   color: 'red'
@@ -29,7 +30,7 @@ configs:
         value: ${{inputs.HEROKU_EMAIL}}
       - name: HEROKU_API_KEY
         value: ${{inputs.HEROKU_API_KEY}}
-      description: "changeme"
+      description: "changeme" # this is required right now due to a known bug
       topics:
       - rails
       

@@ -1,1 +1,1 @@
-# rails-api-fargate-stack
+# rails-api-heroku-stack
