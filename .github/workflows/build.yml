@@ -28,10 +28,10 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     
-    - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
+    - name: setup ruby 3.0.2 
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ github.event.inputs.RUBY_VERSION }}
+        ruby-version: 3.0.2
         bundler-cache: true
 
     - name: rake
