@@ -10,8 +10,6 @@ on:
 
 jobs:
   test:
-    env:
-      RUBY_VERSION: ruby.version
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -30,10 +28,9 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     
-    - name: setup ruby ${{ env.RUBY_VERSION }}
+    - name: setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ env.RUBY_VERSION }}
         bundler-cache: true
 
     - name: rake
@@ -51,8 +48,6 @@ jobs:
     environment: heroku
     needs: test
     if: github.ref_name == 'main'
-    env:
-      HEROKU_APP_NAME: heroku.app.name
     steps:
 
     - name: checkout
@@ -77,11 +72,8 @@ jobs:
 
     - name: add heroku app git remote
       run: |
-        if heroku apps | grep "${{ env.HEROKU_APP_NAME }}"  >> /dev/null; then
-          heroku git:remote -a ${{ env.HEROKU_APP_NAME }}
-        else
-          heroku apps:create ${{ env.HEROKU_APP_NAME }}
-        fi
+        HEROKU_APP_NAME=$(cat .heroku-app-name)
+        heroku git:remote -a "${HEROKU_APP_NAME}"
         git config --list --local | grep heroku
 
     - name: deploy
@@ -96,4 +88,6 @@ jobs:
         heroku ps
 
     - name: display app info
-      run: heroku apps:info -a ${{ env.HEROKU_APP_NAME }}
+      run: |
+        HEROKU_APP_NAME=$(cat .heroku-app-name)
+        heroku apps:info -a "${HEROKU_APP_NAME}"
