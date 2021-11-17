@@ -3,7 +3,7 @@ description: |
   This stack will generate a Rails App and setup a workflow to deploy it to Heroku
 branding:
   icon: 'cloud'
-  color: 'red'
+  color: 'purple'
 
 inputs:
   - name: RUBY_VERSION
@@ -55,8 +55,8 @@ configs:
   environments: 
     - name: heroku
       parameters: 
-      protected-branches: true
-      custom-branch-policies: true
+        protected-branches: true
+        custom-branch-policies: true
 
   security:
     parameters: 
