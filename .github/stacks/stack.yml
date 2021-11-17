@@ -14,6 +14,10 @@ inputs:
     default: 6.1.4.1
     description: The version of rails to use
 
+  - name: RAILS_RC_URL
+    required: false
+    description: (Optional) A URL to a .railsrc file
+
   - name: HEROKU_EMAIL
     description: Heroku email
     is-secret: true
@@ -22,18 +26,19 @@ inputs:
     description: Heroku api key
     is-secret: true
 
-  - name: TEST_BOOL
-    description: a test boolean input
-    type: boolean
+  - name: HEROKU_APP_NAME
+    description: Heroku app name
 
 configs:
   repo-metadata:
     parameters:
       secrets: 
       - name: HEROKU_EMAIL
-        value: ${{inputs.HEROKU_EMAIL}}
+        value: ${{ inputs.HEROKU_EMAIL }}
       - name: HEROKU_API_KEY
-        value: ${{inputs.HEROKU_API_KEY}}
+        value: ${{ inputs.HEROKU_API_KEY }}
+      - name: HEROKU_APP_NAME
+        value: ${{ inputs.HEROKU_APP_NAME }}
       description: "changeme" # this is required right now due to a known bug
       topics:
       - rails

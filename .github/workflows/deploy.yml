@@ -1,0 +1,51 @@
+name: "Deploy to Heroku"
+
+on:
+  push:
+    branches: 
+    - main
+
+jobs:
+  deploy-to-heroku:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: create a netrc file
+      run: |
+        cat > ~/.netrc <<EOF
+        machine api.heroku.com
+          login ${HEROKU_EMAIL}
+          password ${HEROKU_API_KEY}
+        machine git.heroku.com
+          login ${HEROKU_EMAIL}
+          password ${HEROKU_API_KEY}
+        EOF
+      with:
+        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+    - name: install heroku cli
+      run: snap install --classic heroku
+
+    - name: add heroku app git remote
+      run: |
+        if heroku apps | grep "${{ secrets.HEROKU_APP_NAME }}"  >> /dev/null; then
+          heroku git:remote --app ${{ secrets.HEROKU_APP_NAME }}
+        else
+          heroku apps:create ${{ secrets.HEROKU_APP_NAME }}
+        fi
+        git config --list --local | grep heroku
+
+    - name: deploy
+      run: git push heroku main
+
+    - name: migrate db
+      run: heroku run rake db:migrate
+
+    - name: scale dynos
+      run: |
+        heroku ps:scale web=1
+        heroku ps

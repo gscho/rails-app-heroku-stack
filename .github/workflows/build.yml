@@ -1,4 +1,4 @@
-name: "Build and test"
+name: "Build and Test"
 
 on:
   pull_request:
@@ -8,8 +8,11 @@ on:
     branches:
     - main
 
+env:
+  RUBY_VERSION: '___RUBY_VERSION___'
+
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -28,10 +31,10 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     
-    - name: setup ruby 3.0.2
+    - name: setup ruby ${{ env.RUBY_VERSION }}
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.0.2
+        ruby-version: ${{ env.RUBY_VERSION }}
         bundler-cache: true
 
     - name: rake

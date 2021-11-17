@@ -1,4 +1,4 @@
-name: "Generate a new Rails API"
+name: "Generate a New Rails API"
 
 on:
   workflow_dispatch:
@@ -7,21 +7,25 @@ on:
         required: true
       RAILS_VERSION:
         required: true
-      TEST_BOOL:
-        required: true
+      RAILS_RC_URL:
+        required: false
 
 jobs:
   rails-new:
     runs-on: ubuntu-latest
     steps:
-
-      - name: echo the bool
-        run: echo ${{ github.event.inputs.TEST_BOOL }}
       
       - name: checkout stack template
         uses: actions/checkout@v2
         with:
           persist-credentials: false
+
+      - name: substitute user inputs in the build.yml
+        uses: microsoft/variable-substitution@v1 
+        with:
+          files: '.github/workflows/build.yaml'
+        env:
+          ___RUBY_VERSION___: '${{ github.event.inputs.RUBY_VERSION }}'
       
       - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
@@ -34,6 +38,35 @@ jobs:
           gem install rails --version ${{ github.event.inputs.RAILS_VERSION }} --no-document
           rails new . --rc=.railsrc
           rm -f .railsrc
+
+      - name: create a CODEOWNERS.md file
+        run: echo ${{ github.actor }} > CODEOWNERS.md
+
+      - name: create a netrc file
+        run: |
+          cat > ~/.netrc <<EOF
+          machine api.heroku.com
+            login ${HEROKU_EMAIL}
+            password ${HEROKU_API_KEY}
+          machine git.heroku.com
+            login ${HEROKU_EMAIL}
+            password ${HEROKU_API_KEY}
+          EOF
+        with:
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      - name: install heroku cli
+        run: snap install --classic heroku
+
+      - name: create a new heroku app
+        run: |
+          if heroku apps | grep "${{ secrets.HEROKU_APP_NAME }}"  >> /dev/null; then
+            heroku git:remote --app ${{ secrets.HEROKU_APP_NAME }}
+          else
+            heroku apps:create ${{ secrets.HEROKU_APP_NAME }}
+          fi
+          git config --list --local | grep heroku
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v3
