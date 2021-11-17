@@ -2,13 +2,25 @@
 
 This github stack will create a new rails application along with a test and deploy github workflow for deploying to an existing heroku account.
 
-## Prerequisites
+- [Prerequisites](#prerequisites)
+- [Stack Inputs](#stack-inputs)
+- [What This Stack Does in Detail](#what-this-stack-does-in-detail) 
+  - [Repo Creation](#repo-creation)
+  - [Branch Protection Rules](#branch-protection-rules)
+  - [Environments](#environments)
+  - [Security](#security)
+  - [Stack Init Workflow](#stack-init-workflow)
+  - [CD Workflow](#cd-workflow)
+      - [Test Job](#test-job)
+      - [Deploy Job](#deploy-job)
+
+# Prerequisites
 
 - A heroku account
 - The email address used to login to heroku
 - Your heroku API token
 
-## Stack Inputs
+# Stack Inputs
 
 - `RUBY_VERSION`: The desired version of ruby
 - `RAILS_VERSION`: The desired version of rails
@@ -17,35 +29,35 @@ This github stack will create a new rails application along with a test and depl
 - `HEROKU_API_TOKEN`: Your heroku API token
 - `HEROKU_APP_NAME`: An optional heroku app name
 
-## What This Stack Does in Detail
+# What This Stack Does in Detail
 
-### Repo Creation
+## Repo Creation
 
 This stack will configure a new github repository with the `HEROKU_API_TOKEN` and `HEROKU_EMAIL` set at repository secrets. It also sets the topic to "rails".
 
-### Branch Protection Rules
+## Branch Protection Rules
 
 The branch protection rules are configured to be sane defaults, requiring at least 1 review from code owners before merging and dismissing stale reviews.
 
-### Environments
+## Environments
 
 The default environment created is "heroku" and only protected branches can deploy to this environment.
 
-### Security
+## Security
 
 Dependabot scanning is enabled by default.
 
-### Stack Init Workflow
+## Stack Init Workflow
 
 This workflow generates a new rails app from a .railsrc file. It also creates a new heroku app using the provided credentials. Once that's done it opens a pull-request on your new repository (since main is a protected branch) for you to review and approve.
 
-### CD Workflow
+## CD Workflow
 
-#### Test Job
+### Test Job
 
 The "test" job uses a postgresql service container and configures the rails application to use it for testing. It then sets up the database, webpacker and runs tests.
 
-#### Deploy Job
+### Deploy Job
 
 **Note:** The deployment job only runs on the main branch and not pull-requests. 
 
