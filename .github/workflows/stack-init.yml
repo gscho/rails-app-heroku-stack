@@ -57,7 +57,7 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: install heroku cli
-        run: snap install --classic heroku
+        run: sudo snap install --classic heroku
 
       - name: create a new heroku app
         run: |
