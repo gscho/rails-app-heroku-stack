@@ -28,6 +28,7 @@ inputs:
 
   - name: HEROKU_APP_NAME
     description: Heroku app name
+    is-secret: true
 
 configs:
   repo-metadata:
