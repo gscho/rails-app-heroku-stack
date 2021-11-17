@@ -9,7 +9,7 @@ on:
     - main
 
 env:
-  RUBY_VERSION: '___RUBY_VERSION___'
+  RUBY_VERSION: '3.0.2'
 
 jobs:
   build-and-test:

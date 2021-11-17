@@ -20,12 +20,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: substitute user inputs in the build.yml
-        uses: microsoft/variable-substitution@v1 
-        with:
-          files: '.github/workflows/build.yml'
-        env:
-          ___RUBY_VERSION___: '${{ github.event.inputs.RUBY_VERSION }}'
+      # - name: substitute user inputs in the build.yml
+      #   uses: microsoft/variable-substitution@v1 
+      #   with:
+      #     files: '.github/workflows/build.yml'
+      #   env:
+      #     ___RUBY_VERSION___: '${{ github.event.inputs.RUBY_VERSION }}'
       
       - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
