@@ -56,7 +56,6 @@ configs:
     - name: heroku
       parameters: 
         protected-branches: true
-        custom-branch-policies: true
 
   security:
     parameters: 
