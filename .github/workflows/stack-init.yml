@@ -23,12 +23,9 @@ jobs:
           persist-credentials: false
 
       - name: substitute user inputs in the cd.yml
-        uses: microsoft/variable-substitution@v1 
-        with:
-          files: '.github/workflows/cd.yml'
-        env:
-          ruby.version: '${{ github.event.inputs.RUBY_VERSION }}'
-          heroku.app.name: '${{ github.event.inputs.HEROKU_APP_NAME }}'
+        run: |
+          sed -i 's/ruby\.version/${{ github.event.inputs.RUBY_VERSION }}/g' .github/workflows/cd.yml
+          sed -i 's/heroku\.app\.name/${{ github.event.inputs.HEROKU_APP_NAME }}/g' .github/workflows/cd.yml
       
       - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
