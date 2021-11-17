@@ -9,6 +9,8 @@ on:
         required: true
       RAILS_RC_URL:
         required: false
+      HEROKU_APP_NAME:
+        required: true
 
 jobs:
   rails-new:
@@ -20,12 +22,13 @@ jobs:
         with:
           persist-credentials: false
 
-      # - name: substitute user inputs in the build.yml
-      #   uses: microsoft/variable-substitution@v1 
-      #   with:
-      #     files: '.github/workflows/build.yml'
-      #   env:
-      #     ___RUBY_VERSION___: '${{ github.event.inputs.RUBY_VERSION }}'
+      - name: substitute user inputs in the cd.yml
+        uses: microsoft/variable-substitution@v1 
+        with:
+          files: '.github/workflows/cd.yml'
+        env:
+          ___RUBY_VERSION___: '${{ github.event.inputs.RUBY_VERSION }}'
+          ___HEROKU_APP_NAME___: '${{ github.event.inputs.HEROKU_APP_NAME }}'
       
       - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
@@ -39,34 +42,8 @@ jobs:
           rails new . --rc=.railsrc
           rm -f .railsrc
 
-      - name: create a CODEOWNERS.md file
-        run: echo ${{ github.actor }} > CODEOWNERS.md
-
-      - name: create a netrc file
-        run: |
-          cat > ~/.netrc <<EOF
-          machine api.heroku.com
-            login ${HEROKU_EMAIL}
-            password ${HEROKU_API_KEY}
-          machine git.heroku.com
-            login ${HEROKU_EMAIL}
-            password ${HEROKU_API_KEY}
-          EOF
-        env:
-          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-
-      - name: install heroku cli
-        run: curl https://cli-assets.heroku.com/install.sh | sh
-
-      - name: create a new heroku app
-        run: |
-          if heroku apps | grep "${{ secrets.HEROKU_APP_NAME }}"  >> /dev/null; then
-            heroku git:remote --app ${{ secrets.HEROKU_APP_NAME }}
-          else
-            heroku apps:create ${{ secrets.HEROKU_APP_NAME }}
-          fi
-          git config --list --local | grep heroku
+      - name: create a CODEOWNERS file
+        run: echo @"${{ github.actor }}" > CODEOWNERS
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v3

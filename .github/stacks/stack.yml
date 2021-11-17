@@ -1,9 +1,9 @@
 name: rails-api-heroku-stack
 description: |
-  This stack will generate a Rails API and setup a workflow to deploy it to Heroku
+  This stack will generate a Rails App and setup a workflow to deploy it to Heroku
 branding:
   icon: 'cloud'
-  color: 'red'
+  color: 'purple'
 
 inputs:
   - name: RUBY_VERSION
@@ -28,7 +28,6 @@ inputs:
 
   - name: HEROKU_APP_NAME
     description: Heroku app name
-    is-secret: true
 
 configs:
   repo-metadata:
@@ -38,8 +37,6 @@ configs:
         value: ${{ inputs.HEROKU_EMAIL }}
       - name: HEROKU_API_KEY
         value: ${{ inputs.HEROKU_API_KEY }}
-      - name: HEROKU_APP_NAME
-        value: ${{ inputs.HEROKU_APP_NAME }}
       description: "changeme" # this is required right now due to a known bug
       topics:
       - rails
@@ -54,6 +51,12 @@ configs:
           required-approving-review-count: 1
         allow-force-pushes: false
         allow-deletions: false
+
+  environments: 
+    - name: heroku
+      parameters: 
+      protected-branches: true
+      custom-branch-policies: true
 
   security:
     parameters: 

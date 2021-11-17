@@ -1,0 +1,99 @@
+name: "Test and Deploy"
+
+on:
+  pull_request:
+    branches: 
+    - main
+  push:
+    branches:
+    - main
+
+jobs:
+  test:
+    env:
+      RUBY_VERSION: ___RUBY_VERSION___
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+
+    - name: checkout
+      uses: actions/checkout@v2
+    
+    - name: setup ruby ${{ env.RUBY_VERSION }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true
+
+    - name: rake
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: "postgres://postgres:postgres@localhost:5432"
+      run: |
+        bundle exec rails db:create
+        bundle exec rails db:migrate
+        bundle exec rails db:seed
+        bundle exec rails test
+  
+  deploy-to-heroku:
+    runs-on: ubuntu-latest
+    environment: heroku
+    needs: test
+    if: github.ref_name == 'main'
+    env:
+      HEROKU_APP_NAME: ___HEROKU_APP_NAME___
+    steps:
+
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: create a netrc file
+      run: |
+        cat > ~/.netrc <<EOF
+        machine api.heroku.com
+          login ${HEROKU_EMAIL}
+          password ${HEROKU_API_KEY}
+        machine git.heroku.com
+          login ${HEROKU_EMAIL}
+          password ${HEROKU_API_KEY}
+        EOF
+      with:
+        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+    - name: install heroku cli
+      run: curl https://cli-assets.heroku.com/install.sh | sh
+
+    - name: add heroku app git remote
+      run: |
+        if heroku apps | grep "${{ env.HEROKU_APP_NAME }}"  >> /dev/null; then
+          heroku git:remote -a ${{ env.HEROKU_APP_NAME }}
+        else
+          heroku apps:create ${{ env.HEROKU_APP_NAME }}
+        fi
+        git config --list --local | grep heroku
+
+    - name: deploy
+      run: git push heroku main
+
+    - name: migrate db
+      run: heroku run rake db:migrate
+
+    - name: scale dynos
+      run: |
+        heroku ps:scale web=1
+        heroku ps
+
+    - name: display app info
+      run: heroku apps:info -a ${{ env.HEROKU_APP_NAME }}
