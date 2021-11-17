@@ -3,7 +3,7 @@ description: |
   This stack will generate a Rails App and setup a workflow to deploy it to Heroku
 branding:
   icon: 'cloud'
-  color: 'purple'
+  color: 'red'
 
 inputs:
   - name: RUBY_VERSION
