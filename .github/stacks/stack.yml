@@ -1,4 +1,4 @@
-name: rails-api-heroku-stack
+name: rails-app-heroku-stack
 description: |
   This stack will generate a Rails App and setup a workflow to deploy it to Heroku
 branding:
@@ -44,7 +44,6 @@ configs:
   branches:
     - name: main
       parameters:
-        enforce-admins: true
         required-pull-request-reviews:
           dismiss-stale-reviews: true
           require-code-owner-reviews: true
@@ -63,5 +62,4 @@ configs:
       automated-security-fixes: true
 
 init:
- uses: "stack-init.yml"
- 
+ uses: "stack-init.yml" 

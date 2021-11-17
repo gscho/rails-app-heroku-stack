@@ -1,4 +1,4 @@
-name: "Generate a New Rails API"
+name: "Generate a New Rails App"
 
 on:
   workflow_dispatch:
@@ -16,27 +16,32 @@ jobs:
   rails-new:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout stack template
+      - name: Checkout stack template
         uses: actions/checkout@v2
         with:
           persist-credentials: false
       
-      - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
+      - name: Setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ github.event.inputs.RUBY_VERSION }}
           bundler-cache: true
+
+      - name: Download .railsrc file
+        if: ${{ github.event.inputs.RAILS_RC_URL }} != null
+        run: |
+          curl ${{ github.event.inputs.RAILS_RC_URL }} -o .railsrc
       
-      - name: generate a new rails project
+      - name: Generate a new rails project
         run: |
           gem install rails --version ${{ github.event.inputs.RAILS_VERSION }} --no-document
           rails new . --rc=.railsrc
           rm -f .railsrc
 
-      - name: create a CODEOWNERS file
+      - name: Create a CODEOWNERS file
         run: echo @"${{ github.actor }}" > CODEOWNERS
 
-      - name: create a netrc file
+      - name: Create a netrc file
         run: |
           cat > ~/.netrc <<EOF
           machine api.heroku.com
@@ -50,15 +55,15 @@ jobs:
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-      - name: install heroku cli
+      - name: Install heroku cli
         run: curl https://cli-assets.heroku.com/install.sh | sh
 
-      - name: create heroku app
+      - name: Create heroku app
         run: |
           heroku apps:create ${{ github.event.inputs.HEROKU_APP_NAME }}
           echo "${{ github.event.inputs.HEROKU_APP_NAME }}" > .heroku-app-name
 
-      - name: create pull request
+      - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: "generated a new rails api"

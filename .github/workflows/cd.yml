@@ -1,4 +1,4 @@
-name: "Test and Deploy"
+name: "Test and Deploy to Heroku"
 
 on:
   pull_request:
@@ -25,15 +25,15 @@ jobs:
           - 5432:5432
     steps:
 
-    - name: checkout
+    - name: Checkout
       uses: actions/checkout@v2
     
-    - name: setup ruby
+    - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
 
-    - name: rake
+    - name: Rake
       env:
         RAILS_ENV: test
         DATABASE_URL: "postgres://postgres:postgres@localhost:5432"
@@ -41,6 +41,7 @@ jobs:
         bundle exec rails db:create
         bundle exec rails db:migrate
         bundle exec rails db:seed
+        bundle exec rails webpacker:install
         bundle exec rails test
   
   deploy-to-heroku:
@@ -50,10 +51,12 @@ jobs:
     if: github.ref_name == 'main'
     steps:
 
-    - name: checkout
+    - name: Checkout
       uses: actions/checkout@v2
+      with:
+        depth: 0
 
-    - name: create a netrc file
+    - name: Create a netrc file
       run: |
         cat > ~/.netrc <<EOF
         machine api.heroku.com
@@ -67,27 +70,27 @@ jobs:
         HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-    - name: install heroku cli
+    - name: Install heroku cli
       run: curl https://cli-assets.heroku.com/install.sh | sh
 
-    - name: add heroku app git remote
+    - name: Add heroku app git remote
       run: |
         HEROKU_APP_NAME=$(cat .heroku-app-name)
         heroku git:remote -a "${HEROKU_APP_NAME}"
         git config --list --local | grep heroku
 
-    - name: deploy
+    - name: Deploy
       run: git push heroku main
 
-    - name: migrate db
+    - name: Migrate db
       run: heroku run rake db:migrate
 
-    - name: scale dynos
+    - name: Scale dynos
       run: |
         heroku ps:scale web=1
         heroku ps
 
-    - name: display app info
+    - name: Display app info
       run: |
         HEROKU_APP_NAME=$(cat .heroku-app-name)
         heroku apps:info -a "${HEROKU_APP_NAME}"
