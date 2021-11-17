@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     env:
-      RUBY_VERSION: ___RUBY_VERSION___
+      RUBY_VERSION: ruby.version
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -52,7 +52,7 @@ jobs:
     needs: test
     if: github.ref_name == 'main'
     env:
-      HEROKU_APP_NAME: ___HEROKU_APP_NAME___
+      HEROKU_APP_NAME: heroku.app.name
     steps:
 
     - name: checkout

@@ -27,8 +27,8 @@ jobs:
         with:
           files: '.github/workflows/cd.yml'
         env:
-          ___RUBY_VERSION___: '${{ github.event.inputs.RUBY_VERSION }}'
-          ___HEROKU_APP_NAME___: '${{ github.event.inputs.HEROKU_APP_NAME }}'
+          ruby.version: '${{ github.event.inputs.RUBY_VERSION }}'
+          heroku.app.name: '${{ github.event.inputs.HEROKU_APP_NAME }}'
       
       - name: setup ruby ${{ github.event.inputs.RUBY_VERSION }} 
         uses: ruby/setup-ruby@v1
