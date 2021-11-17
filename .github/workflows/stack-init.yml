@@ -10,7 +10,7 @@ on:
       RAILS_RC_URL:
         required: false
       HEROKU_APP_NAME:
-        required: true
+        required: false
 
 jobs:
   rails-new:
@@ -60,8 +60,14 @@ jobs:
 
       - name: Create heroku app
         run: |
-          heroku apps:create ${{ github.event.inputs.HEROKU_APP_NAME }}
-          echo "${{ github.event.inputs.HEROKU_APP_NAME }}" > .heroku-app-name
+          if [ "$HEROKU_APP_NAME" != "" ]; then
+            heroku apps:create ${{ github.event.inputs.HEROKU_APP_NAME }}
+            echo "${{ github.event.inputs.HEROKU_APP_NAME }}" > .heroku-app-name
+          else
+            heroku apps:create --json | jq -r '.name' > .heroku-app-name
+          fi
+        env:
+          HEROKU_APP_NAME: ${{ github.event.inputs.HEROKU_APP_NAME }}
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
