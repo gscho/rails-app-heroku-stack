@@ -25,18 +25,18 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ github.event.inputs.RUBY_VERSION }}
-          bundler-cache: true
-
-      - name: Download .railsrc file
-        if: ${{ github.event.inputs.RAILS_RC_URL }} != null
-        run: |
-          curl ${{ github.event.inputs.RAILS_RC_URL }} -o .railsrc
+          bundler-cache: true          
       
       - name: Generate a new rails project
         run: |
+          if [ "$RAILS_RC_URL" != "" ]; then
+            curl ${{ github.event.inputs.RAILS_RC_URL }} -o .railsrc
+          fi
           gem install rails --version ${{ github.event.inputs.RAILS_VERSION }} --no-document
           rails new . --rc=.railsrc
           rm -f .railsrc
+        env:
+          RAILS_RC_URL: ${{ github.event.inputs.RAILS_RC_URL }}
 
       - name: Create a CODEOWNERS file
         run: echo @"${{ github.actor }}" > CODEOWNERS
