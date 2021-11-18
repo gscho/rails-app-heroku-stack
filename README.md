@@ -1,6 +1,10 @@
 # rails-app-heroku-stack
 
-This github stack will create a new rails application along with a test and deploy github workflow for deploying to an existing heroku account.
+[![Use this template](https://github.com/stack-instance/badge.svg)](https://github.com/stack-instance?stack_template_owner=gscho&stack_template_repo=rails-app-heroku-stack)
+
+# Why should you use this stack?
+
+This github stack will create a new rails application along with a test and deploy github workflow for deploying to an existing heroku account. It also configures a repository with branch protection rules, security settings and an environment.
 
 - [Prerequisites](#prerequisites)
 - [Stack Inputs](#stack-inputs)
@@ -59,6 +63,10 @@ The "test" job uses a postgresql service container and configures the rails appl
 
 ### Deploy Job
 
-**Note:** The deployment job only runs on the main branch and not pull-requests. 
+**Note:** *The deploy job only runs on pushes to the main branch and not pull-requests*. 
 
-The deployment job reads the `.heroku-app-name` file that gets created in the `stack-init.yml` workflow and sets up a git remote to point to the existing heroku app. It then migrates the database and deploys to the heroku remote.
+The deployment job reads the `.heroku-app-name` file that gets created in the `stack-init.yml` workflow and sets up a git remote to point to the existing heroku app. It then migrates the database and deploys to the heroku remote. If you rename the heroku app, you will need to also change the `.heroku-app-name` file.
+
+## Contributors
+
+- Greg Schofield ([@gscho](https://github.com/gscho))
