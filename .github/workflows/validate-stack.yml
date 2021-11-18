@@ -11,4 +11,4 @@ jobs:
   validate-stack:
     runs-on: ubuntu-latest
     steps:
-      - uses: sundargs2000/stacks-pre-publish@vbeta1
+      - uses: sundargs2000/stacks-pre-publish@master
