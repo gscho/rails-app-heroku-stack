@@ -1,3 +1,4 @@
+version: 0.1.0
 name: rails-app-heroku-stack
 description: |
   This stack will generate a Rails App and setup a workflow to deploy it to Heroku
