@@ -1,0 +1,8 @@
+name: Validate Stack
+on:
+  workflow_dispatch:
+jobs:
+  validate-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sundargs2000/stacks-pre-publish@vbeta1
